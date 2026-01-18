@@ -36,7 +36,8 @@ class ProductController extends Controller
             })
             ->paginate(request()->query('perPage', 10))
             ->withQueryString()
-            ->onEachSide(3);
+            ->onEachSide(3)
+            ->withPath(config('app.frontend_url') . '/product');
 
         $datas->transform(function($item) {
             $item->formatted_created_at = $item->created_at->translatedFormat('l, d F Y');
