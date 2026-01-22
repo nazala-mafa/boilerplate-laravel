@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\FileUpload;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,7 @@ class ProductController extends Controller
 {
     public function __construct(
         private Product $product,
+        private FileUpload $fileUpload,
     ) { }
 
     public function index()
@@ -54,13 +56,15 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            $this->product->create($request->only([
+            $product = $this->product->create($request->only([
                 "user_id",
                 "name",
                 "description",
                 "price",
                 "image_url",
             ]));
+
+            $this->fileUpload->updateIsUsed($product, $product->image_url);
 
             DB::commit();
 

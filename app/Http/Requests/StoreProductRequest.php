@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FileUpload;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest
@@ -27,7 +28,9 @@ class StoreProductRequest extends FormRequest
             "name" => ['required', 'unique:products,name', 'string', 'max:255'],
             "description" => ['required', 'string', 'max:500'],
             "price" => ['required', 'numeric', 'min:0'],
-            "image_url" => ['required', 'url'],
+            "image_url" => ['required', 'url', function($name, $value) {
+                return app(FileUpload::class)->isValidFileurl($value);
+            }],
         ];
     }
 
