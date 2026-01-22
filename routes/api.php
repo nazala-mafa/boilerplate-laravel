@@ -9,5 +9,9 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('product', ProductController::class)->names('product');
-Route::apiResource('user', UserController::class)->names('user');
+
+Route::middleware('auth')->group(function() {
+    Route::apiResource('product', ProductController::class)->names('product');
+    Route::get('user/select', [UserController::class, 'select'])->name('user.select');
+    Route::apiResource('user', UserController::class)->names('user');
+});

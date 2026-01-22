@@ -11,6 +11,16 @@ class UserController extends Controller
         private User $user,
     ) { }
 
+    public function select()
+    {
+        return $this->user
+            ->query()
+            ->when(request()->query('q'), function($query, $q) {
+                $query->where('name', 'LIKE', "%$q%");
+            })
+            ->cursorPaginate(request()->query('perPage', 10));
+    }
+
     public function index()
     {
         return $this->user
