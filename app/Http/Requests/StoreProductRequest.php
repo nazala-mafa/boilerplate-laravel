@@ -22,11 +22,19 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => ['required', 'exists:users,id'],
+            "user.label" => ['required', 'exists:users,name'],
+            "user.value" => ['required', 'exists:users,id'],
             "name" => ['required', 'unique:products,name', 'string', 'max:255'],
             "description" => ['required', 'string', 'max:500'],
             "price" => ['required', 'numeric', 'min:0'],
             "image_url" => ['required', 'url'],
         ];
+    }
+
+    public function passedValidation()
+    {
+        $this->merge([
+            "user_id" => $this->input("user.value"),
+        ]);
     }
 }
