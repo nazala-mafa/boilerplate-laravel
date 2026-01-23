@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FileUpload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,7 +25,8 @@ class UpdateProductRequest extends FormRequest
     {
         $productId = $this->route('product');
         return [
-            "user_id" => ['required', 'exists:users,id'],
+            "user.label" => ['required', 'exists:users,name'],
+            "user.value" => ['required', 'exists:users,id'],
             "name" => [
                 'required', 
                 Rule::unique('products', 'name')->ignore($productId, 'id'), 
@@ -33,7 +35,16 @@ class UpdateProductRequest extends FormRequest
             ],
             "description" => ['required', 'string', 'max:500'],
             "price" => ['required', 'numeric', 'min:0'],
-            "image_url" => ['required', 'url'],
+            "image_url" => ['required', 'url', function($name, $value) {
+                return app(FileUpload::class)->isValidFileurl($value);
+            }],
         ];
+    }
+
+    public function passedValidation()
+    {
+        $this->merge([
+            "user_id" => $this->input("user.value"),
+        ]);
     }
 }

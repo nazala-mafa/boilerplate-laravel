@@ -107,6 +107,8 @@ class ProductController extends Controller
                 "image_url",
             ]));
 
+            $this->fileUpload->updateIsUsed($product, $product->image_url);
+
             DB::commit();
 
             return response()->json([
