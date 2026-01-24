@@ -36,6 +36,12 @@ class ProductController extends Controller
                     $query->orderBy($sortField, $sortDirection);
                 }
             })
+            ->when(request()->query('user_ids'), function($query, $ids) {
+                $ids = explode(',', $ids);
+                $query->whereHas('user', function($query2) use($ids) {
+                    $query2->whereIn('id', $ids);
+                });
+            })
             ->paginate(request()->query('perPage', 10))
             ->withQueryString()
             ->onEachSide(3)

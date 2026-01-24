@@ -18,6 +18,10 @@ class UserController extends Controller
     {
         return $this->user
             ->query()
+            ->when(request()->query('ids'), function($query, $ids) {
+                $ids = explode(',', $ids);
+                $query->whereIn('id', $ids);
+            })
             ->when(request()->query('q'), function($query, $q) {
                 $query->where('name', 'LIKE', "%$q%");
             })
