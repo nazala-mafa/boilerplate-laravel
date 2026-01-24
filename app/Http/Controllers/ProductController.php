@@ -48,7 +48,7 @@ class ProductController extends Controller
             return $item;
         });
         
-        return response()->json(compact('datas'));
+        return $datas;
     }
 
     public function store(StoreProductRequest $request)
