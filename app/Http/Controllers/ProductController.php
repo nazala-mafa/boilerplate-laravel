@@ -29,7 +29,7 @@ class ProductController extends Controller
             ->with('user')
             ->when(request()->query('search'), function($query, $search) {
                 $query->where('name', 'LIKE', "%$search%");
-                $query->whereRelation('user', 'name', 'LIKE', "%$search%");
+                $query->orWhereRelation('user', 'name', 'LIKE', "%$search%");
             })
             ->when($sort, function($query, $sort) {
                 foreach ($sort as $sortField => $sortDirection) {
