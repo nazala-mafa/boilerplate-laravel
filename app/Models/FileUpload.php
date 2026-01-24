@@ -77,11 +77,11 @@ class FileUpload extends Model
         }
     }
 
-    public function updateIsUsed(Model $associatedModel, $fileUrl)
+    public function updateIsUsed(Model $associatedModel, $fileUrl, $isUsed = true)
     {
         $existedAssociatedModel = $this
             ->whereMorphedTo('fileuploadable', $associatedModel)
-            ->where('is_used', 1)
+            ->where('is_used', '=', 1)
             ->ofFileUrl($fileUrl, '!=');
         
         if ($existedAssociatedModel->exists()) {
@@ -89,8 +89,13 @@ class FileUpload extends Model
         }
 
         $uploadedFile = $this->ofFileUrl($fileUrl)->first('id');
+
+        if ($uploadedFile == null) {
+            return;
+        }
+
         $uploadedFile->fileuploadable()->associate($associatedModel);
-        $uploadedFile->is_used = true;
+        $uploadedFile->is_used = $isUsed;
         $uploadedFile->save();
     }
 }

@@ -78,7 +78,7 @@ class ProductController extends Controller
 
             return response()->json([
                 "message" => "An error occurred while creating the product, contact admin."
-            ]);
+            ], 500);
         }
     }
 
@@ -121,7 +121,7 @@ class ProductController extends Controller
 
             return response()->json([
                 "message" => "An error occurred while updating the product, contact admin."
-            ]);
+            ], 500);
         }
     }
 
@@ -133,7 +133,9 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            $product->delete($product->id);
+            $this->fileUpload->updateIsUsed($product, $product->image_url, false);
+            
+            $product->delete();
 
             DB::commit();
 
@@ -147,7 +149,7 @@ class ProductController extends Controller
 
             return response()->json([
                 "message" => "An error occurred while deleting the product, contact admin."
-            ]);
+            ], 500);
         }
     }
 }
