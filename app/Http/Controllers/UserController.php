@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,7 @@ class UserController extends Controller
 {
     public function __construct(
         private User $user,
+        private UserRepository $userRepository,
     ) { }
 
     public function select()
@@ -43,9 +45,6 @@ class UserController extends Controller
         return compact(['datas']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
